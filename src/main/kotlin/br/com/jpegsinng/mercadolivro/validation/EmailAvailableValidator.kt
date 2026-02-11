@@ -1,8 +1,9 @@
 package br.com.jpegsinng.mercadolivro.validation
 
 import br.com.jpegsinng.mercadolivro.service.CustomerService
-import javax.validation.ConstraintValidator
-import javax.validation.ConstraintValidatorContext
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
+
 
 class EmailAvailableValidator(var customerService: CustomerService): ConstraintValidator<EmailAvailable, String> {
 

@@ -7,13 +7,14 @@ import br.com.jpegsinng.mercadolivro.exception.NotFoundException
 import br.com.jpegsinng.mercadolivro.model.CustomerModel
 import br.com.jpegsinng.mercadolivro.repository.CustomerRepository
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class CustomerService(
     private val customerRepository: CustomerRepository,
     private val bookService: BookService,
-    private val bCrypt: BCryptPasswordEncoder
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     fun getAll(name: String?): List<CustomerModel> {
@@ -26,7 +27,7 @@ class CustomerService(
     fun create(customer: CustomerModel) {
         val customerCopy = customer.copy(
             roles = setOf(Role.CUSTOMER),
-            password = bCrypt.encode(customer.password)
+            password = passwordEncoder.encode(customer.password)
         )
         customerRepository.save(customerCopy)
     }

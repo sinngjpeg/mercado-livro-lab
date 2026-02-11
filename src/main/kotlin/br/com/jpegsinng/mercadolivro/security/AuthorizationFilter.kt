@@ -2,14 +2,13 @@ package br.com.jpegsinng.mercadolivro.security
 
 import br.com.jpegsinng.mercadolivro.exception.AuthenticationException
 import br.com.jpegsinng.mercadolivro.service.UserDetailsCustomService
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
-import javax.servlet.FilterChain
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import kotlin.collections.get
 
 class AuthorizationFilter(
     authenticationManager: AuthenticationManager,

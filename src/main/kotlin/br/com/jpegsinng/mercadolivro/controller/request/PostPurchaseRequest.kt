@@ -1,8 +1,8 @@
 package br.com.jpegsinng.mercadolivro.controller.request
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Positive
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Positive
 
 
 data class PostPurchaseRequest(

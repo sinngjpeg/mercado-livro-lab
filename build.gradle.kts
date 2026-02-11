@@ -1,50 +1,69 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.4.3"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.4.21"
-    kotlin("plugin.spring") version "1.4.21"
-    kotlin("plugin.jpa") version "1.4.21"
+    kotlin("jvm") version "1.9.25"
+    kotlin("plugin.spring") version "1.9.25"
+    kotlin("plugin.jpa") version "1.9.25"
+
+    id("org.springframework.boot") version "3.2.2"
+    id("io.spring.dependency-management") version "1.1.7"
+
     jacoco
 }
 
 group = "com.mercadolivro"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation ("org.springframework.boot:spring-boot-starter-validation")
+    // Spring Boot
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
 
-    implementation("io.springfox:springfox-swagger2:2.9.2")
-    implementation("io.springfox:springfox-swagger-ui:2.9.2")
+    // JWT (compatível com Java 17 / Boot 3)
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
-    implementation("org.flywaydb:flyway-core:7.7.0")
+    // OpenAPI / Swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
-    runtimeOnly("mysql:mysql-connector-java")
+    // JPA
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
+    // MySQL DRIVER (obrigatório)
+    runtimeOnly("com.mysql:mysql-connector-j:8.3.0")
+
+    // Flyway
+    implementation("org.flywaydb:flyway-core:10.8.1")
+    implementation("org.flywaydb:flyway-mysql:10.8.1")
+
+    // Tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test:5.5.2")
-    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("io.mockk:mockk:1.13.9")
 
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
 

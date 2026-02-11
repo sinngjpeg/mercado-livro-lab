@@ -1,8 +1,8 @@
 package br.com.jpegsinng.mercadolivro.controller.request
 
 import br.com.jpegsinng.mercadolivro.validation.EmailAvailable
-import javax.validation.constraints.Email
-import javax.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotEmpty
 
 
 data class PostCustomerRequest (

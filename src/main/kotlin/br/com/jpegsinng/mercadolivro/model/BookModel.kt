@@ -3,16 +3,8 @@ package br.com.jpegsinng.mercadolivro.model
 import br.com.jpegsinng.mercadolivro.enums.BookStatus
 import br.com.jpegsinng.mercadolivro.enums.Errors
 import br.com.jpegsinng.mercadolivro.exception.BadRequestException
+import jakarta.persistence.*
 import java.math.BigDecimal
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
 
 @Entity(name = "book")
 data class BookModel(

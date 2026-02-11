@@ -9,12 +9,12 @@ import br.com.jpegsinng.mercadolivro.extension.toPageResponse
 import br.com.jpegsinng.mercadolivro.extension.toResponse
 import br.com.jpegsinng.mercadolivro.service.BookService
 import br.com.jpegsinng.mercadolivro.service.CustomerService
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("books")

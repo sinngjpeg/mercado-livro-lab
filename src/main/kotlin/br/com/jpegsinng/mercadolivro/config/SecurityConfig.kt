@@ -10,81 +10,85 @@ import br.com.jpegsinng.mercadolivro.service.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.WebSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.filter.CorsFilter
-
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
-    private val customerRepository: CustomerRepository,
-    private val userDetails: UserDetailsCustomService,
+    private val userDetailsService: UserDetailsCustomService,
     private val jwtUtil: JwtUtil,
-    private val customEntryPoint: CustomAuthenticationEntryPoint
-) : WebSecurityConfigurerAdapter() {
+    private val customEntryPoint: CustomAuthenticationEntryPoint,
+    private val customerRepository: CustomerRepository
+) {
 
-    private val PUBLIC_MATCHERS = arrayOf<String>()
+    private val PUBLIC_POST_MATCHERS = arrayOf("/customers")
+    private val PUBLIC_GET_MATCHERS = arrayOf("/books")
+    private val ADMIN_MATCHERS = arrayOf("/admin/**")
 
-    private val PUBLIC_POST_MATCHERS = arrayOf(
-        "/customers"
-    )
+    @Bean
+    fun securityFilterChain(
+        http: HttpSecurity,
+        authenticationManager: AuthenticationManager
+    ): SecurityFilterChain {
 
-    private val PUBLIC_GET_MATCHERS = arrayOf(
-        "/books"
-    )
+        val authenticationFilter =
+            AuthenticationFilter(authenticationManager, customerRepository, jwtUtil)
 
-    private val ADMIN_MATCHERS = arrayOf(
-        "/admin/**"
-    )
+        val authorizationFilter =
+            AuthorizationFilter(authenticationManager, userDetailsService, jwtUtil)
 
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetails).passwordEncoder(bCryptPasswordEncoder())
-    }
+        http
+            .csrf { it.disable() }
+            .cors { }
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            }
+            .exceptionHandling {
+                it.authenticationEntryPoint(customEntryPoint)
+            }
+            .authorizeHttpRequests {
+                it.requestMatchers(HttpMethod.POST, *PUBLIC_POST_MATCHERS).permitAll()
+                it.requestMatchers(HttpMethod.GET, *PUBLIC_GET_MATCHERS).permitAll()
+                it.requestMatchers(*ADMIN_MATCHERS).hasAuthority(Role.ADMIN.description)
+                it.anyRequest().authenticated()
+            }
+            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
-    override fun configure(http: HttpSecurity) {
-        http.cors().and().csrf().disable()
-        http.authorizeRequests()
-            .antMatchers(*PUBLIC_MATCHERS).permitAll()
-            .antMatchers(HttpMethod.POST, *PUBLIC_POST_MATCHERS).permitAll()
-            .antMatchers(HttpMethod.GET, *PUBLIC_GET_MATCHERS).permitAll()
-            .antMatchers(*ADMIN_MATCHERS).hasAuthority(Role.ADMIN.description)
-            .anyRequest().authenticated()
-        http.addFilter(AuthenticationFilter(authenticationManager(), customerRepository, jwtUtil))
-        http.addFilter(AuthorizationFilter(authenticationManager(), userDetails, jwtUtil))
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        http.exceptionHandling().authenticationEntryPoint(customEntryPoint)
-    }
-
-    override fun configure(web: WebSecurity) {
-        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
-            "/swagger-ui.html", "/webjars/**")
+        return http.build()
     }
 
     @Bean
-    fun corsConfig(): CorsFilter {
-        val source = UrlBasedCorsConfigurationSource()
+    fun authenticationManager(
+        authenticationConfiguration: AuthenticationConfiguration
+    ): AuthenticationManager =
+        authenticationConfiguration.authenticationManager
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder =
+        BCryptPasswordEncoder()
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
         val config = CorsConfiguration()
         config.allowCredentials = true
-        config.addAllowedOrigin("*")
+        config.addAllowedOriginPattern("*")
         config.addAllowedHeader("*")
         config.addAllowedMethod("*")
+
+        val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
-        return CorsFilter(source)
+        return source
     }
-
-    @Bean
-    fun bCryptPasswordEncoder(): BCryptPasswordEncoder {
-        return BCryptPasswordEncoder()
-    }
-
 }

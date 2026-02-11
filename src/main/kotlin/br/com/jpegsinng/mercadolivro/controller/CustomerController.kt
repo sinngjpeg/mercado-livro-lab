@@ -7,9 +7,9 @@ import br.com.jpegsinng.mercadolivro.extension.toCustomerModel
 import br.com.jpegsinng.mercadolivro.extension.toResponse
 import br.com.jpegsinng.mercadolivro.security.UserCanOnlyAccessTheirOwnResource
 import br.com.jpegsinng.mercadolivro.service.CustomerService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("customers")
