@@ -2,6 +2,7 @@ package br.com.jpegsinng.mercadolivro.extension
 
 import br.com.jpegsinng.mercadolivro.controller.request.PostBookRequest
 import br.com.jpegsinng.mercadolivro.controller.request.PostCustomerRequest
+import br.com.jpegsinng.mercadolivro.controller.request.PutBookRequest
 import br.com.jpegsinng.mercadolivro.controller.request.PutCustomerRequest
 import br.com.jpegsinng.mercadolivro.enums.BookStatus
 import br.com.jpegsinng.mercadolivro.model.BookModel
@@ -21,5 +22,15 @@ fun PostBookRequest.toBookModel(customer: CustomerModel): BookModel {
         price = this.price,
         status = BookStatus.ATIVO,
         customer = customer
+    )
+}
+
+fun PutBookRequest.toBookModel(previousValue: BookModel): BookModel {
+    return BookModel(
+        id = previousValue.id,
+        name = this.name ?: previousValue.name,
+        price = this.price ?: previousValue.price,
+        status = previousValue.status,
+        customer = previousValue.customer
     )
 }
