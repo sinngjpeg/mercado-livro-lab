@@ -2,7 +2,9 @@ package br.com.jpegsinng.mercadolivro.model
 
 import br.com.jpegsinng.mercadolivro.enums.BookStatus
 import jakarta.persistence.*
+import org.springframework.data.annotation.Id
 import java.math.BigDecimal
+
 
 @Entity(name = "book")
 data class BookModel(
