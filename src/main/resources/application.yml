@@ -5,6 +5,8 @@ spring:
     url: jdbc:mysql://localhost:3306/mercadolivro?createDatabaseIfNotExist=true
     username: mercado
     password: Mercado@123
+  jackson:
+    default-property-inclusion: non_null
 
 
 
