@@ -7,6 +7,7 @@ import br.com.jpegsinng.mercadolivro.extension.toBookModel
 import br.com.jpegsinng.mercadolivro.extension.toResponse
 import br.com.jpegsinng.mercadolivro.service.BookService
 import br.com.jpegsinng.mercadolivro.service.CustomerService
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -22,7 +23,7 @@ class BookController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody request: PostBookRequest) {
+    fun create(@RequestBody @Valid request: PostBookRequest) {
         val customer = customerService.findById(request.customerId)
         bookService.create(request.toBookModel(customer))
     }
