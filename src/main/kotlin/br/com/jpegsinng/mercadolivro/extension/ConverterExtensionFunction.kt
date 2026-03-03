@@ -13,11 +13,22 @@ import br.com.jpegsinng.mercadolivro.model.CustomerModel
 import org.springframework.data.domain.Page
 
 fun PostCustomerRequest.toCustomerModel(): CustomerModel {
-    return CustomerModel(name = this.name, email = this.email, status = CustomerStatus.ATIVO)
+    return CustomerModel(
+        name = this.name,
+        email = this.email,
+        status = CustomerStatus.ATIVO,
+        password = this.password
+    )
 }
 
 fun PutCustomerRequest.toCustomerModel(previousValue: CustomerModel): CustomerModel {
-    return CustomerModel(id = previousValue.id, name = this.name, email = this.email, status = previousValue.status)
+    return CustomerModel(
+        id = previousValue.id,
+        name = this.name,
+        email = this.email,
+        status = previousValue.status,
+        password = previousValue.password
+    )
 }
 
 fun PostBookRequest.toBookModel(customer: CustomerModel): BookModel {
@@ -59,10 +70,11 @@ fun BookModel.toResponse(): BookResponse {
     )
 }
 
-fun <T> Page<T>.toPageResponse(): PageResponse<T> {
-    return PageResponse(
-        this.content,
-        this.number,
-        this.totalElements,
-        this.totalPages)
-}
+//fun <T> Page<T>.toPageResponse(): PageResponse<T> {
+//    return PageResponse(
+//        this.content,
+//        this.number,
+//        this.totalElements,
+//        this.totalPages
+//    )
+//}
