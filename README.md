@@ -5,45 +5,70 @@ A aplicação servirá como base para uma API de gerenciamento de livros, usuár
 
 ### 🚀 Tecnologias utilizadas
 
-- Java 11
-- Kotlin
-- Spring Boot
-- Gradle
-- Spring Web
+- Java 17
+- Kotlin 1.9.25
+- Spring Boot 3.4.5
+- MySQL & Flyway (Migrations)
+- JSON Web Token (JJWT)
 
-### 🧱 Estrutura inicial
+### 🔐 Configuração de Segurança (Obrigatório)
 
-O projeto foi gerado utilizando o Spring Initializr, com empacotamento em JAR e gerenciamento de dependências via Gradle.
+Para que a autenticação funcione, você deve configurar uma chave mestra no seu `application.yml` ou `application.properties`.
 
-### ▶️ Como rodar o projeto localmente
+1. Localize a propriedade `jwt.secret`.
+2. Insira uma frase com pelo menos <b>64 caracteres</b> (512 bits) para atender aos requisitos do algoritmo HS512.
 
-#### Pré-requisitos
+### 🛠️ Como criar seu primeiro Usuário Admin
 
-- Java 11 instalado
-- Variável de ambiente JAVA_HOME configurada
-- IntelliJ IDEA (ou outra IDE compatível)
+Como a API nasce protegida, siga estes passos para ter acesso total:
 
-#### Passos
+1. Criar o usuário via Postman
+  - Faça um POST para http://localhost:8080/customers com o corpo:
 
-Clone o repositório:
+````bash
+    {
+      "name": "Admin Teste",
+      "email": "admin@email.com",
+      "password": "123"
+    }
+````
 
-`git clone <url-do-repositorio>`
+2. Promover a ADMIN no MySQL
+- Abra seu terminal SQL ou (DBeaver/Workbanch) e execute os comandos abaixo para dar permissões totais ao usuário:
 
-Acesse o diretório do projeto:
+````bash 
 
-`cd mercado-livro`
+USE mercadolivro;
 
-Abra o projeto na IntelliJ IDEA
-A IDE irá baixar automaticamente as dependências do Gradle.
+-- 1. Verifique o ID do usuário criado
+SELECT id, name, email FROM customer;
 
-Execute a aplicação:
+-- 2. Insira a role ADMIN para esse ID (exemplo com ID 1)
+INSERT INTO customer_roles (customer_id, role) VALUES (1, 'ADMIN');
+````
+3. Obter o Token de Acesso
+  -  Faça um POST para http://localhost:8080/login com o e-mail e senha criados.
+   O Token JWT estará no Header da resposta, no campo Authorization.
 
-Pela classe principal `MercadoLivroApplication`
 
-A aplicação estará disponível em:
+### 🔍 Queries úteis para verificação
 
-`http://localhost:8080`
+Use estas consultas para monitorar seu banco de dados:
+- Verificar todos os usuários e suas roles:
 
-#### 📝 Observações
+````bash 
+SELECT c.id, c.name, c.email, r.role 
+FROM customer c 
+LEFT JOIN customer_roles r ON c.id = r.customer_id;
+````
 
-Esta é a estrutura inicial do projeto. Novas funcionalidades, endpoints, autenticação e testes serão adicionados nas próximas etapas.
+- Verificar livros cadastrados:
+````bash
+SELECT * FROM book;
+````
+
+### 📖 Documentação da API:
+
+Com o projeto rodando, acesse:
+- `http://localhost:8080/swagger-ui/index.html` para visualizar e testar todos os endpoints interativamente.
+
