@@ -26,7 +26,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
+    // No seu build.gradle.kts, substitua a linha antiga por estas:
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.flywaydb:flyway-mysql")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
