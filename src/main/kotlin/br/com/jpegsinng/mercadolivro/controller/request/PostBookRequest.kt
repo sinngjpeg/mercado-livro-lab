@@ -1,10 +1,9 @@
 package br.com.jpegsinng.mercadolivro.controller.request
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import jakarta.validation.constraints.NotEmpty
-import org.jetbrains.annotations.NotNull
 import java.math.BigDecimal
-
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.NotEmpty
 
 data class PostBookRequest(
 

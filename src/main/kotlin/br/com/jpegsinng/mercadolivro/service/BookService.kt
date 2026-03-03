@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class BookService(
-    val bookRepository: BookRepository
+    private val bookRepository: BookRepository
 ) {
 
     fun create(book: BookModel) {
@@ -33,7 +33,9 @@ class BookService(
 
     fun delete(id: Int) {
         val book = findById(id)
+
         book.status = BookStatus.CANCELADO
+
         update(book)
     }
 

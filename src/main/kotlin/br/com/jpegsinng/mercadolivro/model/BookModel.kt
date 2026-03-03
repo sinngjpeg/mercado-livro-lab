@@ -3,13 +3,21 @@ package br.com.jpegsinng.mercadolivro.model
 import br.com.jpegsinng.mercadolivro.enums.BookStatus
 import br.com.jpegsinng.mercadolivro.enums.Errors
 import br.com.jpegsinng.mercadolivro.exception.BadRequestException
-import jakarta.persistence.*
-import org.springframework.data.annotation.Id
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import java.math.BigDecimal
 
 
 @Entity(name = "book")
 data class BookModel(
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int? = null,
@@ -23,24 +31,25 @@ data class BookModel(
     @ManyToOne
     @JoinColumn(name = "customer_id")
     var customer: CustomerModel? = null
+
 ) {
+
     @Column
     @Enumerated(EnumType.STRING)
     var status: BookStatus? = null
         set(value) {
-            if (field == BookStatus.CANCELADO || field == BookStatus.DELETADO) {
+            if(field == BookStatus.CANCELADO || field == BookStatus.DELETADO)
                 throw BadRequestException(Errors.ML102.message.format(field), Errors.ML102.code)
-                field = value
-            }
+
+            field = value
         }
 
-    constructor(
-        id: Int? = null,
-        name: String,
-        price: BigDecimal,
-        customer: CustomerModel? = null,
-        status: BookStatus?
-    ) : this(id, name, price, customer) {
+    constructor(id: Int? = null,
+                name: String,
+                price: BigDecimal,
+                customer: CustomerModel? = null,
+                status: BookStatus?): this(id, name, price, customer) {
         this.status = status
     }
+
 }

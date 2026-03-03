@@ -8,5 +8,9 @@ spring:
   jackson:
     default-property-inclusion: non_null
 
+jwt:
+  secret: Jm1TMxekOOseaCNWCQC37WePfMMkVN7SKxiVcYPvb8O2CvA78Tp9EdlbhXQTfcZ9Ii3OexTx5Bd9qNHSJUhv10
+  expiration: 999999
+
 
 
