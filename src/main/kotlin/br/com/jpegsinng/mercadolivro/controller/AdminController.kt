@@ -5,11 +5,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/health")
-class HealthController {
+@RequestMapping("admin")
+class AdminController() {
 
-    @GetMapping
-    fun health(): Map<String, String>{
-        return mapOf("status" to "UP")
+    @GetMapping("/reports")
+    fun report(): String {
+        return "This is a Report. Only Admin can see it!"
     }
+
 }
